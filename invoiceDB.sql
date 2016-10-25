@@ -63,7 +63,15 @@ foreign key (personID) references Person(personID)
 );
 
 create table Products (
-invoiceID int,
-foreign key (invoiceID) references Invoice(invoiceID),
-primary key (invoiceID)
+productsID int(11) not null auto_increment,
+productCode varchar(30),
+productType varchar(30),
+productName varchar(30),
+ProductAddres varchar(30),
+ProductScreenNO varchar(30),
+ProductQuanity varchar(30),
+StartDate Date,
+EndDate Date,
+primary key (Productsid) int(11),
+foreign key (invoiceID) references Invoice(invoiceID)
 );
