@@ -1,15 +1,22 @@
-drop table Email;
-drop table Address;
-drop table Person;
-drop table Customer;
-drop table Invoice;
 drop table Products;
-show tables;
+drop table Invoice;
+drop table Customer;
+drop table Person;
+drop table Address;
+drop table Email;
+select * from Person;
+alter table Person drop column ;
+alter table Person drop foreign key Person_ibfk_1;
+alter table Person drop foreign key Person_ibfk_2;
+show create table Person;
+-- show tables;
 
 CREATE TABLE Email (
-emailID int(11),
+emailID int(11) not null auto_increment,
+personID int,
 emailAddess VARCHAR(30),
-primary key (emailID)
+primary key (personID),
+foreign key (personID) references Person(personID)
 );
 
 
@@ -29,22 +36,26 @@ personCode varchar(30),
 firstName varchar(30),
 lastName varchar(30),
 addressID int,
-emailID int,
 primary key (personID),
-foreign key (addressID) references Address(addressID),
-foreign key (emailID) references Email(emailID)
+foreign key (addressID) references Address(addressID)
 );
 
+alter table Email add foreign key (personID) references Person(personID);
+
 create table Customer (
+
 customerID int(11) not null auto_increment,
+
+-- Entities found in Customer --
+
 customerCode varchar(30),
 personID int,
 customerName varchar(30),
 addressID int,
 subclass varchar(30),
-tax double precision,
-fee double precision,
-discount double precision,
+
+-- Creation of primary and foreign key --
+
 primary key (customerID),
 foreign key (personID) references Person(personID),
 foreign key (addressID) references Address(addressID)
@@ -63,15 +74,43 @@ foreign key (personID) references Person(personID)
 );
 
 create table Products (
+
+-- entities which are common to all products --
+
 productsID int(11) not null auto_increment,
 productCode varchar(30),
-productType varchar(30),
+units varchar(30),
+attachedProduct varchar(30),
 productName varchar(30),
-ProductAddress varchar(30),
-ProductScreenNO varchar(30),
-ProductQuantity varchar(30),
-StartDate Date,
-EndDate Date,
-primary key (productsID) int(11),
+pricePerUnit double precision,
+discount double precision,
+invoiceID int,
+
+-- Division of products by SubClass (Ticket, Service) and --
+-- SubSubClass (MovieTicket, SeasonPass, Refreshment, Parking Pass) --
+
+productSubClass varchar(30),
+productSubSubClass varchar(30),
+ 
+-- Specific SubSubClass entities --
+
+-- MovieTicket entities --
+
+movieDateTime Date,
+movieScreenNo varchar(30),
+movieAddress varchar(30),
+
+-- SeasonPass entities --
+
+startDate Date,
+endDate Date,
+
+-- Creation of primary and foreign keys --
+
+primary key (productsID),
 foreign key (invoiceID) references Invoice(invoiceID)
 );
+
+-- Now a query to input sample data -- 
+
+INSERT INTO Email VALUES(
