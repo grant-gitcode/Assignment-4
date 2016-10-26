@@ -11,8 +11,7 @@ alter table Person drop foreign key Person_ibfk_1;
 alter table Person drop foreign key Person_ibfk_2;
 show create table Person;
 set foreign_key_checks = 0;
-
--- show tables;
+show tables;
 
 CREATE TABLE Address (
 addressID int (11) not null auto_increment,
@@ -108,7 +107,7 @@ create table Products (
 
 productsID int(11) not null auto_increment,
 productCode varchar(30),
-units varchar(30),
+units int(11),
 attachedProduct varchar(30),
 productName varchar(30),
 pricePerUnit double precision,
@@ -139,3 +138,28 @@ endDate Date,
 primary key (productsID),
 foreign key (invoiceID) references Invoice(invoiceID)
 );
+
+-- Creation of Products sample data --
+select * from Products;
+delete from Products where productsID=1;
+insert into Products(productCode, productSubSubClass,productName, startDate, endDate,pricePerUnit) 
+values ("b29e","S","Halloween Pass",'2016-10-01','2016-10-31',90.00);
+insert into Products (productCode, productSubSubClass, productName,pricePerUnit) values 
+("ff23","R","Butter Beer-200oz",40.99);
+
+
+
+
+
+
+12
+b29e;S;Halloween Pass;2016-10-01;2016-10-31;90.00
+ff23;R;Butter Beer-200oz;40.99
+fp12;M;2016-10-21 13:10;The Shiny;345 Bloody Mary Way,Gretna, NE, 68190, USA;4A;20.00
+90fa;P;50.00
+
+
+
+
+
+
