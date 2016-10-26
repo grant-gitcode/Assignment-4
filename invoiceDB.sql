@@ -72,6 +72,6 @@ ProductScreenNO varchar(30),
 ProductQuantity varchar(30),
 StartDate Date,
 EndDate Date,
-primary key (ProductsID) int(11),
+primary key (productsID) int(11),
 foreign key (invoiceID) references Invoice(invoiceID)
 );
