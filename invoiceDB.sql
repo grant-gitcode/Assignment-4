@@ -25,14 +25,12 @@ primary key (addressID)
 );
 
 -- Creation of Address sample data -- 
-insert into Address(street, city, state, zip, country) values (
-4
-944c;Lesner, Rocky;321 Backwards Street,Dallas,IA,60789,USA;rockythelesner@boxerbro.com, rockyarockmysocks@socksbro.net
-306a;McCringleberry, Hingle;2906 N. 34th St.,Funky Town,WY,60999,USA;thecringleberry@gmail.com
-55bb;Wise, Yoda;0000 Meditation Way,Portland,OR,75111,USA;YodaWise@gmail.com, YodaWise@hotmail.com, YodaWise@outlook.com
-2342;Thorton, Billy Bob;no street available,no city,no state,no zip,no nation;
-
-
+select * from Address;
+delete from Address where addressID=1;
+insert into Address(street, city, state, zip, country) values ("Backwards Street","Dallas","IA","60789","USA");
+insert into Address(street, city, state, zip, country) values ("N. 34th St.","Funky Town","WY","60999","USA");
+insert into Address(street, city, state, zip, country) values ("0000 Meditation Way","Portland","OR","75111","USA");
+insert into Address(street, city, state, zip, country) values ("no street available","no city","no state","no zip","USA");
 
 create table Person (
 personID int(11) not null auto_increment,
@@ -55,12 +53,23 @@ INSERT INTO Person(personCode,firstName,lastName,addressID) VALUES("2342","Billy
 CREATE TABLE Email (
 emailID int(11) not null auto_increment,
 personID int,
-emailAddess VARCHAR(30),
+emailAddress VARCHAR(30),
 primary key (emailID),
 foreign key (personID) references Person(personID)
 );
 
 alter table Email add foreign key (personID) references Person(personID);
+
+-- Creation of sample Email data --
+select * from Email;
+show create table Email;
+insert into Email(personID,emailAddress) values (1,"rockythelesner@boxerbro.com");
+insert into Email(personID,emailAddress) values (1,"rockyarockmysocks@socksbro.net");
+insert into Email(personID,emailAddress) values (2,"thecringleberry@gmail.com");
+insert into Email(personID,emailAddress) values (3,"YodaWise@gmail.com");
+insert into Email(personID,emailAddress) values (3,"YodaWise@hotmail.com");
+insert into Email(personID,emailAddress) values (3,"YodaWise@outlook.com");
+insert into Email(personID,emailAddress) values (4,"");
 
 create table Customer (
 
