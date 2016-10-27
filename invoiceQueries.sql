@@ -11,7 +11,7 @@ set sql_safe_updates = 0;
 update Products as sub set sub.movieAddress="123 Change St." where sub.subType="M";
 
 -- 4. A query (or series of queries) to remove a given movie ticket record. 
-Delete from Products where sub.subType = "M"
+Delete from Products where sub.movieAddress = "123Change St." AND sub.subType = "M";
 
 -- 5. A query to get all the products in a particular invoice. 
 
@@ -26,7 +26,8 @@ select * from Invoice as i where i.customerID = 1;
 insert into Products(productName,cost,units) values ("New Product",100.00,35);
 
 -- 8. A query to find the total of all per-unit costs of all movie-tickets. 
-select 
+SELECT P.subType SUM(P.cost) AS TotalCost
+WHERE P.subType="M";
 -- 9. A query to find the total number of movie-tickets sold on a particular date. 
 
 SELECT I.date, SUM(P.units) AS ticketCount
@@ -66,6 +67,12 @@ GROUP BY P.subType;
 should only appear once (since any number of units can be consolidated to a single record).  Write a 
 query to find any invoice that includes multiple instances of the same ticket. 
 */
+SELECT I.invoiceCode, P.subType
+FROM Invoice AS I JOIN Product AS P 
+ON I.productsID = P.productsID
+WHERE P.subType = "P"
+Group BY invoiceID, productsID 
+Having Count (Product.productID) > 1;
 /* 15. Write a query to detect a possible conflict of interest as follows.  No distinction is made in this 
 system between a person who is the primary contact of a customer and a person who is also a sales person.  
 Write a query to find any and all invoices where the salesperson is the same as the primary contact of the 
