@@ -3,13 +3,16 @@
 select * from Person;
 
 -- 2. A query to add an email to a specific person. 
-
+insert into Person (personId, emailAddress)
+values ('2', 'shane.ps360@gmail.com');
 -- 3. A query to change the address of a theater in a movie ticket record. 
 
 set sql_safe_updates = 0;
 update Products as sub set sub.movieAddress="123 Change St." where sub.subType="M";
 
 -- 4. A query (or series of queries) to remove a given movie ticket record. 
+Delete from Products as sub set sub.M
+
 -- 5. A query to get all the products in a particular invoice. 
 
 select * from Products as p where p.invoiceID = 1;
