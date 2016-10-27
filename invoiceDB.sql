@@ -30,7 +30,9 @@ INSERT INTO Person(personCode,firstName,lastName,addressID) VALUES
 ("944c","Rocky","Lesner",1),
 ("306a","Hingle","McCringleberry",2),
 ("55bb","Yoda","Wise",3),
-("2342","Billy Bob","Thorton",4);
+("2342","Billy Bob","Thorton",4),
+("7777","Honest Joe","McHonest",5),
+("8888","Honest Jane","McHonest",6);
 
 CREATE TABLE Email (
 emailID int(11) not null auto_increment,
@@ -46,7 +48,8 @@ alter table Email add foreign key (personID) references Person(personID);
 insert into Email(personID,emailAddress) values 
 (1,"rockythelesner@boxerbro.com"),(1,"rockyarockmysocks@socksbro.net"),
 (2,"thecringleberry@gmail.com"),(3,"YodaWise@gmail.com"),
-(3,"YodaWise@hotmail.com"),(3,"YodaWise@outlook.com"),(4,"");
+(3,"YodaWise@hotmail.com"),(3,"YodaWise@outlook.com"),(4,""),
+(5,"honestJoseph@goodguy.org"),(6,"honestJane@goodgal.org");
 
 create table Customer (
 
@@ -71,7 +74,7 @@ foreign key (addressID) references Address(addressID)
 -- Creation of Customer sample data --
 insert into Customer (customerCode,subclass,personID,customerName,addressID) values
 ("C001","G",1,"The University of Rick and Morty",5),("C002","S",2,"The Fellowship of the Wedding Ring",6),
-("C003","S",3,"The Hang Ten Club",7),("C004","G",4,"Boring Town Inc.",8);
+("C003","S",3,"The Hang Ten Club",7),("C004","G",4,"Boring Town Inc.",8),("C005","G",5,"Not Corrupt Corp.",8);
 
 create table Invoice (
 invoiceID int(11) not null auto_increment,
@@ -130,7 +133,8 @@ alter table Invoice add foreign key (productsID) references Products(productsID)
 -- Creation of Invoice sample data --
 insert into Invoice (invoiceCode,customerID,personID,date,productsID) values 
 ("INV001",1,1,'2016-10-03',1),("INV002",2,2,'2016-10-10',2),
-("INV003",3,3,'2016-10-26',3),("INV004",4,4,'2016-10-16',4);
+("INV003",3,3,'2016-10-26',3),("INV004",4,4,'2016-10-16',4),
+("INV005",5,6,'2016-10-06',5);
 
 -- Creation of Products sample data --
 
@@ -145,8 +149,8 @@ insert into Products (productCode,subType,cost) values ("90fa","P",50.00); 	-- P
 
 -- Creation of actual products associated with Invoices --
 -- Invoice 1 --
-insert into Products (productCode,subType,movieDateTime, productName,movieAddress,movieScreenNo,cost) select
-productCode,subType,movieDateTime, productName,movieAddress,movieScreenNo,cost from Products where productsID=1;
+insert into Products (productCode, subType,productName, startDate, endDate,cost) select
+productCode, subType,productName, startDate, endDate,cost from Products where productsID=1;
 update Products set invoiceID=1,units=10 where productsID=5;
 
 insert into Products (productCode,subType,cost) select productCode,subType,cost from Products where productsID=4;
@@ -180,3 +184,15 @@ update Products set invoiceID=4,units=5 where productsID=12;
 insert into Products (productCode, subType, productName,cost) select productCode,subType,productName,cost from
 Products where productsID=2;
 update Products set invoiceID=4,units=7 where productsID=13;
+
+-- Invoice 5 --
+insert into Products (productCode,subType,movieDateTime, productName,movieAddress,movieScreenNo,cost) select
+productCode,subType,movieDateTime, productName,movieAddress,movieScreenNo,cost from Products where productsID=3;
+update Products set invoiceID=5,units=5 where productsID=14;
+
+insert into Products (productCode, subType, productName,cost) select productCode,subType,productName,cost from
+Products where productsID=2;
+update Products set invoiceID=5,units=7 where productsID=15;
+
+
+select * from Products;
