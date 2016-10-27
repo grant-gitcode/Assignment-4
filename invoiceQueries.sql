@@ -11,7 +11,7 @@ set sql_safe_updates = 0;
 update Products as sub set sub.movieAddress="123 Change St." where sub.subType="M";
 
 -- 4. A query (or series of queries) to remove a given movie ticket record. 
-Delete from Products as sub set sub.M
+Delete from Products where sub.subType = "M"
 
 -- 5. A query to get all the products in a particular invoice. 
 
@@ -20,11 +20,13 @@ select * from Products as p where p.invoiceID = 1;
 -- as sub (blah) sub
 
 -- 6. A query to get all the invoices of a particular customer. 
+select * from Invoice as i where i.customerID = 1;
 -- 7. A query that “adds” a particular product to a particular invoice. 
 
 insert into Products(productName,cost,units) values ("New Product",100.00,35);
 
 -- 8. A query to find the total of all per-unit costs of all movie-tickets. 
+select 
 -- 9. A query to find the total number of movie-tickets sold on a particular date. 
 
 SELECT I.date, SUM(P.units) AS ticketCount
@@ -33,6 +35,9 @@ ON P.invoiceID = I.invoiceID
 WHERE I.date='2016-10-16' AND P.subType="M";
 
 -- 10. A query to find the total number of invoices for every salesperson. 
+SELECT P.personID, SUM(I.invoiceID) AS TotalInvoice
+FROM Invoice AS I JOIN Person AS P 
+ON P.invoiceID = I.invoiceID 
 -- 11. A query to find the total number of invoices for a particular movie ticket.
 
 SELECT P.productName, COUNT(I.invoiceID) AS invoiceCount 
@@ -43,6 +48,10 @@ WHERE P.productName="The Shiny";
 /* 12. A query to find the total revenue generated (excluding fees and taxes) on a particular date from 
 all movie-tickets (hint: you can take an aggregate of a mathematical expression). 
 */
+Select P.subType, SUM(P.units * P.cost) As totalRevenue
+From Products As P JOIN Invoice AS I
+ON P.invoiceID = I.invoiceID
+WHERE I.date='2016-10-16' AND P.subType = "M";
 /*13. A query to find the total quantities sold (excluding fees and taxes) of each category of services 
 (parking-passes and refreshments) in all the existing invoices. 
 */
