@@ -26,22 +26,25 @@ select * from Invoice as i where i.customerID = 1;
 insert into Products(productName,cost,units) values ("New Product",100.00,35);
 
 -- 8. A query to find the total of all per-unit costs of all movie-tickets. 
+
 SELECT P.subType SUM(P.cost) AS TotalCost
 WHERE P.subType="M";
+
 -- 9. A query to find the total number of movie-tickets sold on a particular date. 
 
-SELECT I.date, SUM(P.units) AS ticketCount
+SELECT SUM(P.units) AS ticketCount
 FROM Products AS P JOIN Invoice AS I 
 ON P.invoiceID = I.invoiceID 
-WHERE I.date='2016-10-16' AND P.subType="M";
+WHERE I.date='2016-10-06' AND P.subType="M";
 
 -- 10. A query to find the total number of invoices for every salesperson. 
-SELECT P.personID, SUM(I.invoiceID) AS TotalInvoice
-FROM Invoice AS I JOIN Person AS P 
-ON P.invoiceID = I.invoiceID 
+SELECT P.personCode, COUNT(I.invoiceID) AS invoiceTotal
+FROM Person AS P JOIN Customer AS C JOIN Invoice AS I 
+ON P.personID = C.personID AND C.customerID = I.customerID
+GROUP BY P.personCode;
 -- 11. A query to find the total number of invoices for a particular movie ticket.
 
-SELECT P.productName, COUNT(I.invoiceID) AS invoiceCount 
+SELECT COUNT(I.invoiceID) AS invoiceCount 
 FROM Invoice AS I JOIN Products AS P
 ON P.invoiceID = I.invoiceID
 WHERE P.productName="The Shiny";
@@ -49,7 +52,7 @@ WHERE P.productName="The Shiny";
 /* 12. A query to find the total revenue generated (excluding fees and taxes) on a particular date from 
 all movie-tickets (hint: you can take an aggregate of a mathematical expression). 
 */
-Select P.subType, SUM(P.units * P.cost) As totalRevenue
+SELECT SUM(P.units * P.cost) As totalMovieRevenue
 From Products As P JOIN Invoice AS I
 ON P.invoiceID = I.invoiceID
 WHERE I.date='2016-10-16' AND P.subType = "M";
@@ -67,12 +70,13 @@ GROUP BY P.subType;
 should only appear once (since any number of units can be consolidated to a single record).  Write a 
 query to find any invoice that includes multiple instances of the same ticket. 
 */
-SELECT I.invoiceCode, P.subType
-FROM Invoice AS I JOIN Product AS P 
-ON I.productsID = P.productsID
-WHERE P.subType = "P"
-Group BY invoiceID, productsID 
-Having Count (Product.productID) > 1;
+SELECT I.invoiceCode, P.productsID, P.subType, P.productName, P.productCode, P.units
+FROM Invoice AS I JOIN Products AS P 
+ON I.invoiceID=P.invoiceID
+WHERE P.subType="M" OR P.subType="S"
+GROUP BY I.invoiceID, P.productsID
+HAVING COUNT(P.invoiceID) > 0;
+
 /* 15. Write a query to detect a possible conflict of interest as follows.  No distinction is made in this 
 system between a person who is the primary contact of a customer and a person who is also a sales person.  
 Write a query to find any and all invoices where the salesperson is the same as the primary contact of the 
@@ -83,4 +87,4 @@ FROM Invoice AS I JOIN Customer AS C
 ON I.customerID = C.customerID
 WHERE I.personID = C.personID;
 
--- Should NOT show the 5th invoice, since nearly all my data is filled with conflicts of interests! --
+-- Should NOT show the 5th invoice, since nearly all our data is filled with conflicts of interests! --
