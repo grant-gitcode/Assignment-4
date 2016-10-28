@@ -1,34 +1,34 @@
 -- 1. A query to retrieve the major fields for every person.
 
-select * from Person;
+SELECT * FROM Person;
 
 -- 2. A query to add an email to a specific person. 
-insert into Person (personId, emailAddress)
-values ('2', 'shane.ps360@gmail.com');
+INSERT INTO Email (personId, emailAddress)
+VALUES ('2', 'shane.ps360@gmail.com');
 -- 3. A query to change the address of a theater in a movie ticket record. 
 
-set sql_safe_updates = 0;
-update Products as sub set sub.movieAddress="123 Change St." where sub.subType="M";
+UPDATE Products as sub set sub.movieAddress="123 Change St." where sub.subType="M";
 
 -- 4. A query (or series of queries) to remove a given movie ticket record. 
-Delete from Products where sub.movieAddress = "123Change St." AND sub.subType = "M";
+DELETE FROM Products 
+WHERE subType = "M" AND movieScreenNo = "4A";
 
 -- 5. A query to get all the products in a particular invoice. 
 
-select * from Products as p where p.invoiceID = 1;
+SELECT * FROM Products AS p WHERE p.invoiceID = 1;
 
 -- as sub (blah) sub
 
 -- 6. A query to get all the invoices of a particular customer. 
-select * from Invoice as i where i.customerID = 1;
+SELECT * FROM, Invoice AS i WHERE i.customerID = 1;
 -- 7. A query that “adds” a particular product to a particular invoice. 
 
-insert into Products(productName,cost,units) values ("New Product",100.00,35);
+INSERT INTO Products(productName,cost,units) VALUES ("New Product",100.00,35);
 
 -- 8. A query to find the total of all per-unit costs of all movie-tickets. 
 
-SELECT P.subType SUM(P.cost) AS TotalCost
-WHERE P.subType="M";
+SELECT * FROM Products AS P WHERE P.subType = "M";
+SELECT SUM(cost*units) AS Perunitcost FROM Products;
 
 -- 9. A query to find the total number of movie-tickets sold on a particular date. 
 
