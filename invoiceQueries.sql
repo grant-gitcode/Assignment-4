@@ -7,35 +7,44 @@ INSERT INTO Email (personId, emailAddress)
 VALUES ('2', 'shane.ps360@gmail.com');
 -- 3. A query to change the address of a theater in a movie ticket record. 
 
-UPDATE Products as sub set sub.movieAddress="123 Change St." where sub.subType="M";
+UPDATE Products AS sub JOIN Invoice AS I
+ON sub.invoiceID = I.invoiceID 
+SET sub.movieAddress="123 Change St." 
+WHERE sub.subType="M" AND I.invoiceCode="INV001";
 
 -- 4. A query (or series of queries) to remove a given movie ticket record. 
-DELETE FROM Products 
-WHERE subType = "M" AND movieScreenNo = "4A";
+DELETE P FROM Products AS P JOIN Invoice AS I
+ON P.invoiceID = I.invoiceID
+WHERE subType = "M" AND I.invoiceCode="INV003";
 
 -- 5. A query to get all the products in a particular invoice. 
 
-SELECT * FROM Products AS p WHERE p.invoiceID = 1;
-
--- as sub (blah) sub
+SELECT * FROM Products AS P JOIN Invoice AS I
+ON P.invoiceID = I.invoiceID
+WHERE I.invoiceCode="INV003";
 
 -- 6. A query to get all the invoices of a particular customer. 
-SELECT * FROM, Invoice AS i WHERE i.customerID = 1;
+
+SELECT * FROM Invoice AS I JOIN Customer AS C
+ON I.customerID = C.customerID 
+WHERE C.customerCode="C002";
+
 -- 7. A query that “adds” a particular product to a particular invoice. 
 
-INSERT INTO Products(productName,cost,units) VALUES ("New Product",100.00,35);
+INSERT INTO Products(productName,cost,units,invoiceID) 
+VALUES ("New Product",100.00,35,
+(SELECT I.invoiceID FROM Invoice AS I WHERE I.invoiceCode="INV006"));
 
 -- 8. A query to find the total of all per-unit costs of all movie-tickets. 
 
-SELECT * FROM Products AS P WHERE P.subType = "M";
-SELECT SUM(cost*units) AS Perunitcost FROM Products;
+SELECT SUM(cost*units) AS Perunitcost FROM Products WHERE subType="M";
 
 -- 9. A query to find the total number of movie-tickets sold on a particular date. 
 
 SELECT SUM(P.units) AS ticketCount
 FROM Products AS P JOIN Invoice AS I 
 ON P.invoiceID = I.invoiceID 
-WHERE I.date='2016-10-06' AND P.subType="M";
+WHERE I.date='2016-10-16' AND P.subType="M";
 
 -- 10. A query to find the total number of invoices for every salesperson. 
 SELECT P.personCode, COUNT(I.invoiceID) AS invoiceTotal
@@ -47,7 +56,7 @@ GROUP BY P.personCode;
 SELECT COUNT(I.invoiceID) AS invoiceCount 
 FROM Invoice AS I JOIN Products AS P
 ON P.invoiceID = I.invoiceID
-WHERE P.productName="The Shiny";
+WHERE P.productName="The Shiny" AND P.movieDateTime='2016-10-21 13:10:00';
  
 /* 12. A query to find the total revenue generated (excluding fees and taxes) on a particular date from 
 all movie-tickets (hint: you can take an aggregate of a mathematical expression). 
@@ -70,21 +79,22 @@ GROUP BY P.subType;
 should only appear once (since any number of units can be consolidated to a single record).  Write a 
 query to find any invoice that includes multiple instances of the same ticket. 
 */
-SELECT I.invoiceCode, P.productsID, P.subType, P.productName, P.productCode, P.units
+SELECT I.invoiceCode, P.productCode AS duplicateProductCode, P.subType, 
+P.productName AS duplicateProductName, SUM(P.units) AS totalUnits, COUNT(P.invoiceID) AS duplicateCount
 FROM Invoice AS I JOIN Products AS P 
 ON I.invoiceID=P.invoiceID
 WHERE P.subType="M" OR P.subType="S"
-GROUP BY I.invoiceID, P.productsID
-HAVING COUNT(P.invoiceID) > 0;
+GROUP BY I.invoiceCode, P.productCode
+HAVING COUNT(P.productsID) > 1;
 
 /* 15. Write a query to detect a possible conflict of interest as follows.  No distinction is made in this 
 system between a person who is the primary contact of a customer and a person who is also a sales person.  
 Write a query to find any and all invoices where the salesperson is the same as the primary contact of the 
 invoice’s customer.  */
 
-SELECT I.invoiceCode, I.personID,C.personID 
-FROM Invoice AS I JOIN Customer AS C 
-ON I.customerID = C.customerID
+SELECT I.invoiceCode,C.customerCode,P.personCode 
+FROM Invoice AS I JOIN Customer AS C JOIN Person AS P
+ON I.customerID = C.customerID AND C.personID = P.personID
 WHERE I.personID = C.personID;
 
 -- Should NOT show the 5th invoice, since nearly all our data is filled with conflicts of interests! --
